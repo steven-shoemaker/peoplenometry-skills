@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peoplenometry — Report Design System</title>
+<style>
+/* ██████████████████████████████████████████████████████████████████████████
+   ██                                                                      ██
+   ██   ✎ EDIT THESE TO REBRAND                                            ██
+   ██                                                                      ██
+   ██   These five lines are the ONLY thing you need to touch to make      ██
+   ██   every future report match your company. Nothing else.              ██
+   ██                                                                      ██
+   ██   How:                                                               ██
+   ██     1. Open this file in any text editor (TextEdit, Notepad, etc).   ██
+   ██     2. Change the values below. Keep the quotes on the text ones.    ██
+   ██     3. Save. Done — every report generated after this is on-brand.   ██
+   ██     4. Reopen this file in a web browser to preview your changes.    ██
+   ██                                                                      ██
+   ██   Tip: a hex color looks like #2B59C3 — ask your marketing team      ██
+   ██   for your brand's hex, or pick one at any online color picker.      ██
+   ██   Keep it dark enough to read on white paper.                        ██
+   ██                                                                      ██
+   ██████████████████████████████████████████████████████████████████████████ */
+
+:root {
+  --brand:        #2B59C3;              /* ✎ your brand accent — marks every finding   */
+  --ink:          #171D2B;              /* ✎ body text color — near-black, cool        */
+  --caution:      #9A5B13;              /* ✎ "handle with care" color — keep restrained */
+  --company-name: "Acme People Team";   /* ✎ shown in the report letterhead            */
+  --company-mark: "◆";                  /* ✎ optional: one character/emoji as wordmark  */
+
+/* ── END OF THE EDITABLE BLOCK ─────────────────────────────────────────────
+   Everything below is the full token set. It derives from the values above
+   where possible, so a rebrand cascades automatically. Only edit below if
+   you know exactly what you're doing. ────────────────────────────────────── */
+
+  /* Paper & cool neutrals */
+  --paper:    #FFFFFF;   /* report sheet */
+  --page:     #F4F6F9;   /* style-guide background (screen only) */
+  --cloud:    #EEF1F6;   /* soft fill */
+  --mist:     #D9DEE8;   /* hairlines, borders */
+  --steel:    #5B6474;   /* captions, secondary text — 5.9:1 on white */
+  --graphite: #333A48;   /* strong secondary text */
+
+  /* Derived tints — follow --brand and --caution automatically */
+  --brand-wash:   color-mix(in srgb, var(--brand) 7%, white);
+  --brand-tint:   color-mix(in srgb, var(--brand) 16%, white);
+  --caution-wash: color-mix(in srgb, var(--caution) 8%, white);
+
+  /* Chart palette — one accent, quiet neutrals. Never add more colors. */
+  --chart-accent:  var(--brand);   /* the finding — one series/bar/point only */
+  --chart-neutral: #C6CEDC;        /* everything that isn't the finding       */
+  --chart-line:    #8792A6;        /* trend lines, non-accent strokes         */
+  --chart-grid:    #E3E8F0;        /* gridlines — barely there                */
+
+  /* Type — no webfonts: system stacks only, so reports work offline forever */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono:  ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Type scale (report) */
+  --fs-stat:    58px;    /* the one big number      */
+  --fs-display: 34px;    /* report title            */
+  --fs-lede:    20px;    /* executive answer        */
+  --fs-h2:      21px;    /* finding titles          */
+  --fs-body:    15px;    /* running text            */
+  --fs-small:   13px;    /* appendix, table body    */
+  --fs-caption: 11.5px;  /* kickers, captions, n=   */
+
+  /* Spacing scale */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  /* Shape */
+  --r-sm: 3px;
+  --r-md: 6px;
+  --hairline: 1px solid var(--mist);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REPORT CSS — the system itself.
+   The /brief-my-chro skill inlines the :root block above plus everything in
+   this section into every report it generates. Guide chrome (further below)
+   stays here in the style guide and is never copied.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; }
+
+.report {
+  max-width: 660px;
+  margin: 0 auto;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+.report p { margin: 0 0 var(--sp-4); }
+.report strong { font-weight: 600; }
+
+/* ---- Masthead: letterhead line with the editable company name ---- */
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--sp-3);
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: var(--sp-6);
+}
+.masthead-company {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.company-mark::after { content: var(--company-mark); color: var(--brand); margin-right: 7px; }
+.company-name::after { content: var(--company-name); }
+.masthead-kind {
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--steel);
+}
+
+/* ---- Title block ---- */
+.report-title {
+  font-family: var(--serif);
+  font-size: var(--fs-display);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--sp-3);
+  color: var(--ink);
+}
+.report-subtitle {
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  color: var(--steel);
+  margin: 0 0 var(--sp-7);
+}
+.report-subtitle .sep { color: var(--mist); padding: 0 2px; }
+
+/* ---- Kicker: small mono label used everywhere ---- */
+.kicker {
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--brand);
+  margin: 0 0 var(--sp-3);
+}
+
+/* ---- Executive answer: the lede. Large, serif, first thing they read ---- */
+.exec-answer { margin-bottom: var(--sp-7); }
+.exec-answer .lede {
+  font-family: var(--serif);
+  font-size: var(--fs-lede);
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0;
+}
+.exec-answer .lede strong { font-weight: 600; }
+
+/* ---- Finding block: rule, kicker, title, body, exhibit ---- */
+.finding {
+  border-top: var(--hairline);
+  padding-top: var(--sp-5);
+  margin-bottom: var(--sp-7);
+  break-inside: avoid;
+}
+.finding-title {
+  font-family: var(--serif);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  margin: 0 0 var(--sp-3);
+  color: var(--ink);
+}
+
+/* ---- Stat block: the one big number. HTML on purpose — crisp in print ---- */
+.stat-block {
+  margin: var(--sp-5) 0;
+  break-inside: avoid;
+}
+.stat-block::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: var(--brand);
+  margin-bottom: var(--sp-3);
+}
+.stat-figure {
+  font-family: var(--serif);
+  font-size: var(--fs-stat);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.stat-figure .stat-unit { font-size: 0.55em; font-weight: 400; color: var(--graphite); }
+.stat-label {
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--graphite);
+  margin-top: var(--sp-2);
+}
+.stat-n {
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  color: var(--steel);
+  margin-top: var(--sp-1);
+}
+
+/* ---- Caution callout: labeled, never color-only ---- */
+.callout-caution {
+  border-left: 3px solid var(--caution);
+  background: var(--caution-wash);
+  padding: var(--sp-4) var(--sp-5);
+  margin: var(--sp-5) 0;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  break-inside: avoid;
+}
+.callout-caution .callout-kicker {
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--caution);
+  margin: 0 0 var(--sp-2);
+}
+.callout-caution p {
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink);
+}
+
+/* ---- Exhibits: charts & tables live inside <figure> and always show n ---- */
+figure.exhibit {
+  margin: var(--sp-5) 0;
+  break-inside: avoid;
+}
+figure.exhibit svg { display: block; width: 100%; height: auto; }
+figure.exhibit figcaption {
+  font-family: var(--sans);
+  font-size: var(--fs-caption);
+  color: var(--steel);
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-2);
+  border-top: var(--hairline);
+}
+figure.exhibit figcaption strong { color: var(--graphite); font-weight: 600; }
+
+/* ---- Data table ---- */
+table.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+}
+table.data-table caption {
+  text-align: left;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--steel);
+  padding-bottom: var(--sp-2);
+}
+table.data-table th {
+  font-family: var(--sans);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--graphite);
+  text-align: right;
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 2px solid var(--ink);
+}
+table.data-table th:first-child,
+table.data-table td:first-child { text-align: left; padding-left: 0; }
+table.data-table th:last-child,
+table.data-table td:last-child { padding-right: 0; }
+table.data-table td {
+  padding: var(--sp-2) var(--sp-3);
+  text-align: right;
+  border-bottom: var(--hairline);
+  color: var(--ink);
+}
+table.data-table td:first-child { font-weight: 500; }
+table.data-table tr:last-child td { border-bottom: 2px solid var(--mist); }
+table.data-table .muted { color: var(--steel); }
+
+/* ---- Next moves ---- */
+.next-moves {
+  margin: 0 0 var(--sp-5);
+  padding: 0;
+  list-style: none;
+  counter-reset: move;
+}
+.next-moves li {
+  counter-increment: move;
+  position: relative;
+  padding-left: var(--sp-6);
+  margin-bottom: var(--sp-3);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+}
+.next-moves li::before {
+  content: counter(move);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- Methodology appendix: quieter, denser, honest ---- */
+.appendix {
+  border-top: 2px solid var(--ink);
+  padding-top: var(--sp-5);
+  margin-top: var(--sp-7);
+  font-size: var(--fs-small);
+  color: var(--graphite);
+}
+.appendix .kicker { color: var(--steel); }
+.appendix h3 {
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  margin: var(--sp-5) 0 var(--sp-2);
+}
+.appendix p, .appendix li { font-size: var(--fs-small); line-height: 1.55; }
+.appendix ul { margin: 0 0 var(--sp-3); padding-left: 18px; }
+.appendix li { margin-bottom: var(--sp-1); }
+.appendix dl { margin: 0; }
+.appendix dt {
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: var(--sp-3);
+}
+.appendix dd { margin: 2px 0 0 0; }
+
+/* ---- Footer badge ---- */
+.report-footer {
+  border-top: var(--hairline);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-3);
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.02em;
+  color: var(--steel);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.report-footer .pn-mark {
+  color: var(--brand);
+  font-weight: 700;
+}
+.report-footer .sep { color: var(--mist); }
+
+/* ---- Chart interactivity: enhancement layer only ----
+   Charts are complete static SVG. The REPORT JS block (bottom of the report
+   markup) adds hover tooltips to any [data-tip] element and an entrance
+   animation to children of .chart-anim marked data-anim. If JS never runs,
+   none of these styles change what the reader sees. */
+[data-tip] { cursor: default; }
+svg [data-tip]:hover { opacity: 0.88; }
+svg rect[data-tip] { transition: opacity 120ms ease; }
+.chart-tip {
+  position: fixed;
+  z-index: 40;
+  max-width: 280px;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  box-shadow: 0 4px 16px rgba(23,29,43,0.28);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 130ms ease, transform 130ms ease;
+}
+.chart-tip.is-visible { opacity: 1; transform: translateY(0); }
+.chart-tip .tip-title { display: block; font-weight: 600; margin-bottom: 1px; }
+.chart-tip .tip-detail { display: block; color: var(--mist); }
+
+/* ---- Print: Letter, tight, page-break aware ---- */
+@page { size: letter; margin: 0.75in 0.8in; }
+@media print {
+  body { background: #fff !important; padding: 0 !important; }
+  .guide-only { display: none !important; }
+  .report-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+  }
+  .report { max-width: none; }
+  .finding, .stat-block, .callout-caution, figure.exhibit, .exec-answer { break-inside: avoid; }
+  .chart-tip { display: none !important; }
+  .appendix { break-before: page; }
+  a { color: inherit; text-decoration: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GUIDE CHROME — style-guide display only. NEVER inlined into reports.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+body {
+  margin: 0;
+  padding: 56px 24px 96px;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.guide { max-width: 940px; margin: 0 auto; }
+
+.guide-header h1 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 38px;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+}
+.guide-header .sub { color: var(--steel); font-size: 14px; margin: 0 0 var(--sp-6); max-width: 620px; }
+.guide-header .sub code {
+  font-family: var(--mono); font-size: 12.5px;
+  background: var(--cloud); padding: 1px 5px; border-radius: 4px;
+}
+
+.guide section.guide-section { margin-bottom: 72px; }
+.guide h2.guide-h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 25px;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+.guide .guide-note { color: var(--steel); font-size: 13.5px; margin: 0 0 20px; max-width: 640px; }
+hr.rule { border: none; border-top: 1px solid var(--mist); margin: 0 0 24px; }
+
+/* Rebrand panel */
+.rebrand-panel {
+  background: var(--brand-wash);
+  border: 1px solid var(--brand-tint);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--r-md);
+  padding: 24px 28px;
+  margin-bottom: 72px;
+}
+.rebrand-panel h2 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+.rebrand-panel ol { margin: 0 0 16px; padding-left: 20px; font-size: 14px; }
+.rebrand-panel li { margin-bottom: 5px; }
+.rebrand-panel code {
+  font-family: var(--mono); font-size: 12.5px;
+  background: #fff; border: 1px solid var(--mist);
+  padding: 1px 5px; border-radius: 4px;
+}
+.rebrand-live { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.rebrand-chip { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--graphite); }
+.rebrand-chip .dot { width: 22px; height: 22px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.12); }
+.rebrand-chip .co::after { content: var(--company-name); font-weight: 600; }
+.rebrand-chip .mk::after { content: var(--company-mark); color: var(--brand); }
+
+/* Swatches */
+.swatch-group { margin-bottom: 28px; }
+.swatch-group-label {
+  font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--steel); margin-bottom: 12px;
+}
+.swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 20px 16px; }
+.swatch .chip {
+  width: 64px; height: 64px; border-radius: var(--r-md);
+  border: 1px solid var(--mist); margin-bottom: 8px;
+}
+.swatch .hex  { font-family: var(--mono); font-size: 12px; color: var(--graphite); display: block; }
+.swatch .token { font-family: var(--mono); font-size: 11px; color: var(--steel); display: block; }
+
+/* Type specimens */
+.type-scale { border: 1px solid var(--mist); border-radius: var(--r-md); background: var(--paper); overflow: hidden; }
+.type-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+  padding: 20px 24px; border-bottom: 1px solid var(--cloud);
+}
+.type-row:last-child { border-bottom: none; }
+.type-specimen { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); }
+.type-meta { font-family: var(--mono); font-size: 12px; color: var(--steel); text-align: right; flex-shrink: 0; }
+.type-meta .name { color: var(--graphite); display: block; margin-bottom: 2px; }
+
+.t-display { font-family: var(--serif); font-size: var(--fs-display); line-height: 1.15; font-weight: 500; letter-spacing: -0.01em; }
+.t-stat    { font-family: var(--serif); font-size: var(--fs-stat); line-height: 1; font-weight: 500; letter-spacing: -0.02em; }
+.t-lede    { font-family: var(--serif); font-size: var(--fs-lede); line-height: 1.55; font-weight: 400; }
+.t-h2s     { font-family: var(--serif); font-size: var(--fs-h2); line-height: 1.3; font-weight: 500; }
+.t-body    { font-family: var(--sans); font-size: var(--fs-body); line-height: 1.6; }
+.t-small   { font-family: var(--sans); font-size: var(--fs-small); line-height: 1.55; }
+.t-kicker  { font-family: var(--mono); font-size: var(--fs-caption); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; color: var(--brand); }
+
+/* Spacing ruler */
+.spacing-ruler {
+  display: flex; align-items: flex-end; gap: 28px;
+  padding: 28px 24px; background: var(--paper);
+  border: 1px solid var(--mist); border-radius: var(--r-md); overflow-x: auto;
+}
+.space-token { display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
+.space-bar { background: var(--brand); border-radius: 2px; height: 14px; }
+.space-label { font-family: var(--mono); font-size: 11px; color: var(--graphite); text-align: center; }
+.space-label span { display: block; color: var(--steel); }
+
+/* Component stages */
+.component { margin-bottom: 40px; }
+.component-name { font-family: var(--mono); font-size: 12px; color: var(--steel); margin-bottom: 12px; }
+.component-stage {
+  padding: 32px 36px; background: var(--paper);
+  border: 1px solid var(--mist); border-radius: var(--r-md);
+}
+
+/* Chart rules card */
+.rules-card {
+  background: var(--paper); border: 1px solid var(--mist); border-radius: var(--r-md);
+  padding: 20px 26px; margin-bottom: 28px;
+}
+.rules-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--graphite); }
+.rules-card li { margin-bottom: 5px; }
+.rules-card strong { color: var(--ink); }
+
+/* Sample report sheet */
+.report-sheet {
+  background: var(--paper);
+  border: 1px solid var(--mist);
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(23,29,43,0.05), 0 18px 44px rgba(23,29,43,0.09);
+  padding: 64px 72px 48px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+@media (max-width: 700px) { .report-sheet { padding: 36px 24px; } }
+.print-hint {
+  text-align: center; font-family: var(--mono); font-size: 11.5px;
+  color: var(--steel); margin: 16px 0 0;
+}
+</style>
+</head>
+<body>
+<div class="guide">
+
+  <!-- ═══════════════ GUIDE HEADER (screen only) ═══════════════ -->
+  <header class="guide-header guide-only">
+    <h1>Peoplenometry report design system</h1>
+    <p class="sub">
+      The single source of truth for every report <code>/brief-my-chro</code> generates.
+      Scroll for tokens, type, charts, and components — the page ends with a full rendered
+      sample report. Printing this file (⌘P / Ctrl+P) outputs <em>only</em> the sample
+      report, exactly as a CHRO would receive it.
+    </p>
+  </header>
+
+  <!-- ═══════════════ REBRAND PANEL (screen only) ═══════════════ -->
+  <aside class="rebrand-panel guide-only" aria-label="How to rebrand">
+    <h2>✎ Make every report yours — two-minute rebrand</h2>
+    <ol>
+      <li>Open this file in any plain-text editor (right-click → Open With → TextEdit or Notepad).</li>
+      <li>Find the loud block at the very top marked <code>✎ EDIT THESE TO REBRAND</code>.</li>
+      <li>Replace the hex after <code>--brand:</code> with your brand color, and the text inside quotes after <code>--company-name:</code> with your company's name. That's it.</li>
+      <li>Save, then reopen this file in your browser — the chips below (and the whole sample report) update live.</li>
+    </ol>
+    <div class="rebrand-live">
+      <span class="rebrand-chip"><span class="dot" style="background:var(--brand)"></span>--brand (live)</span>
+      <span class="rebrand-chip"><span class="dot" style="background:var(--ink)"></span>--ink (live)</span>
+      <span class="rebrand-chip"><span class="dot" style="background:var(--caution)"></span>--caution (live)</span>
+      <span class="rebrand-chip"><span class="mk"></span><span class="co"></span></span>
+    </div>
+  </aside>
+
+  <!-- ═══════════════ COLOR ═══════════════ -->
+  <section class="guide-section guide-only" id="color">
+    <h2 class="guide-h2">Color</h2>
+    <hr class="rule">
+    <p class="guide-note">
+      One cobalt ink for findings. Cool grays for everything else. One burnished ochre,
+      used only when a number needs to be handled with care. Nothing decorative.
+    </p>
+
+    <div class="swatch-group">
+      <div class="swatch-group-label">Brand &amp; ink · the ✎ editable set</div>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="chip" style="background:var(--brand); border-color:transparent"></div>
+          <span class="hex">#2B59C3</span><span class="token">--brand</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:var(--ink); border-color:transparent"></div>
+          <span class="hex">#171D2B</span><span class="token">--ink</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:var(--caution); border-color:transparent"></div>
+          <span class="hex">#9A5B13</span><span class="token">--caution</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:var(--brand-wash)"></div>
+          <span class="hex">derived</span><span class="token">--brand-wash</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:var(--caution-wash)"></div>
+          <span class="hex">derived</span><span class="token">--caution-wash</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="swatch-group">
+      <div class="swatch-group-label">Cool neutrals</div>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="chip" style="background:#FFFFFF"></div>
+          <span class="hex">#FFFFFF</span><span class="token">--paper</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#EEF1F6"></div>
+          <span class="hex">#EEF1F6</span><span class="token">--cloud</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#D9DEE8; border-color:transparent"></div>
+          <span class="hex">#D9DEE8</span><span class="token">--mist</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#5B6474; border-color:transparent"></div>
+          <span class="hex">#5B6474</span><span class="token">--steel</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#333A48; border-color:transparent"></div>
+          <span class="hex">#333A48</span><span class="token">--graphite</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="swatch-group">
+      <div class="swatch-group-label">Chart palette · one accent, quiet neutrals</div>
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="chip" style="background:var(--chart-accent); border-color:transparent"></div>
+          <span class="hex">= --brand</span><span class="token">--chart-accent</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#C6CEDC; border-color:transparent"></div>
+          <span class="hex">#C6CEDC</span><span class="token">--chart-neutral</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#8792A6; border-color:transparent"></div>
+          <span class="hex">#8792A6</span><span class="token">--chart-line</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" style="background:#E3E8F0"></div>
+          <span class="hex">#E3E8F0</span><span class="token">--chart-grid</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ TYPOGRAPHY ═══════════════ -->
+  <section class="guide-section guide-only" id="typography">
+    <h2 class="guide-h2">Typography</h2>
+    <hr class="rule">
+    <p class="guide-note">
+      Serif display for what the reader should feel; sans for what they should scan.
+      System stacks only — no webfonts, so every report opens and prints identically offline.
+      All numerals are tabular.
+    </p>
+
+    <div class="type-scale">
+      <div class="type-row">
+        <div class="type-specimen t-stat">23.6%</div>
+        <div class="type-meta"><span class="name">Stat · serif</span>58 / 1.0 / 500</div>
+      </div>
+      <div class="type-row">
+        <div class="type-specimen t-display">Why are people leaving?</div>
+        <div class="type-meta"><span class="name">Display · serif</span>34 / 1.15 / 500</div>
+      </div>
+      <div class="type-row">
+        <div class="type-specimen t-h2s">One cohort runs 2.4× the company attrition rate</div>
+        <div class="type-meta"><span class="name">Finding title · serif</span>21 / 1.3 / 500</div>
+      </div>
+      <div class="type-row">
+        <div class="type-specimen t-lede">The healthy headline hides one sharp, expensive concentration.</div>
+        <div class="type-meta"><span class="name">Lede · serif</span>20 / 1.55 / 400</div>
+      </div>
+      <div class="type-row">
+        <div class="type-specimen t-body">The concentration sits in one function, one level, one tenure band — targeted action beats a company-wide program.</div>
+        <div class="type-meta"><span class="name">Body · sans</span>15 / 1.6 / 400</div>
+      </div>
+      <div class="type-row">
+        <div class="type-specimen t-small">Voluntary attrition = voluntary leavers ÷ average headcount, annualized over the trailing 12 months.</div>
+        <div class="type-meta"><span class="name">Small · sans</span>13 / 1.55 / 400</div>
+      </div>
+      <div class="type-row">
+        <div class="type-specimen t-kicker">Finding 1 · The concentration</div>
+        <div class="type-meta"><span class="name">Kicker · mono</span>11.5 / caps / +12%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SPACING ═══════════════ -->
+  <section class="guide-section guide-only" id="spacing">
+    <h2 class="guide-h2">Spacing</h2>
+    <hr class="rule">
+    <p class="guide-note">
+      An 8-step scale. Reports breathe: findings are separated by <code>--sp-7</code>,
+      exhibits sit inside <code>--sp-5</code>, nothing tighter than <code>--sp-2</code> ever touches text.
+    </p>
+
+    <div class="spacing-ruler">
+      <div class="space-token"><div class="space-bar" style="width:4px"></div><div class="space-label">4<span>--sp-1</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:8px"></div><div class="space-label">8<span>--sp-2</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:12px"></div><div class="space-label">12<span>--sp-3</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:16px"></div><div class="space-label">16<span>--sp-4</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:24px"></div><div class="space-label">24<span>--sp-5</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:32px"></div><div class="space-label">32<span>--sp-6</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:48px"></div><div class="space-label">48<span>--sp-7</span></div></div>
+      <div class="space-token"><div class="space-bar" style="width:64px"></div><div class="space-label">64<span>--sp-8</span></div></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CHARTS ═══════════════ -->
+  <section class="guide-section guide-only" id="charts">
+    <h2 class="guide-h2">Charts</h2>
+    <hr class="rule">
+    <p class="guide-note">
+      Three archetypes cover every exhibit a people-analytics brief needs. Complete inline
+      SVG — every bar, point, label, and value drawn in the markup itself, so the chart is
+      fully correct with JavaScript off, in print, and the instant the file opens. A tiny
+      inline script (the <strong>REPORT JS</strong> block at the bottom of the report) then
+      layers on hover tooltips and a one-time entrance animation. Zero external requests —
+      no CDN, no chart library, no webfonts, ever. Copy these patterns verbatim and swap the data.
+    </p>
+
+    <div class="rules-card">
+      <ul>
+        <li><strong>Zero external requests.</strong> No CDN, no chart library, no webfonts. Reports get forwarded, opened offline, printed, and read in locked-down mail clients.</li>
+        <li><strong>Static SVG first, JS second.</strong> The markup alone is the finished chart. JS adds tooltips (<code>data-tip</code> / <code>data-tip-title</code>) and entrance animation (<code>class="chart-anim"</code> + <code>data-anim="grow|rise"</code>) — enhancement only; no layout depends on it.</li>
+        <li><strong>One accent per chart.</strong> <code>--chart-accent</code> marks the finding; everything else is <code>--chart-neutral</code>.</li>
+        <li><strong>Bars start at zero.</strong> Always. No exceptions, no truncated axes.</li>
+        <li><strong>Label directly.</strong> Values at bar ends, annotations at the point of interest. No legends, ever.</li>
+        <li><strong>Every chart shows its n</strong> in the figcaption.</li>
+        <li><strong>Never meaning by color alone.</strong> The accented element also carries a text annotation, so grayscale printing survives. Accessible: <code>role="img"</code> + a descriptive <code>aria-label</code> on every SVG.</li>
+      </ul>
+    </div>
+
+    <!-- CHART PATTERN A: horizontal bar / segment comparison — copy this SVG.
+         Static-complete: correct with JS off. data-tip → hover tooltip;
+         chart-anim + data-anim → entrance animation. Both are enhancement only. -->
+    <div class="component">
+      <div class="component-name">Chart A — horizontal bars · segment comparison · hover a bar for the detail</div>
+      <div class="component-stage">
+        <figure class="exhibit">
+          <svg class="chart-anim" viewBox="0 0 640 200" role="img"
+               aria-label="Horizontal bar chart of annualized voluntary attrition by cohort. Company average 9.8 percent. Engineering 8.1 percent. Customer Success 11.2 percent. Sales overall 12.4 percent. The accented cohort, Sales individual contributors at 12 to 24 months tenure, runs 23.6 percent — 2.4 times the company average.">
+            <!-- category labels -->
+            <text x="162" y="20"  text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Company avg</text>
+            <text x="162" y="58"  text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Engineering</text>
+            <text x="162" y="96"  text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Customer Success</text>
+            <text x="162" y="134" text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Sales (all)</text>
+            <text x="162" y="172" text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--ink)" font-weight="600">Sales · IC · 12–24 mo</text>
+            <!-- bars: all start at x=170 (zero baseline). Widths are the finished chart; JS only replays them. -->
+            <rect x="170" y="4"   width="137" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Company average" data-tip="9.8% voluntary, annualized · 89 leavers · avg headcount 912"/>
+            <rect x="170" y="42"  width="113" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Engineering" data-tip="8.1% voluntary, annualized · 17 leavers · avg headcount 238"/>
+            <rect x="170" y="80"  width="157" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Customer Success" data-tip="11.2% voluntary, annualized · 14 leavers · avg headcount 141"/>
+            <rect x="170" y="118" width="174" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Sales (all)" data-tip="12.4% voluntary, annualized · 34 leavers · avg headcount 309"/>
+            <rect x="170" y="156" width="330" height="22" rx="2" fill="var(--chart-accent)"  data-anim="grow" data-tip-title="Sales · IC · 12–24 mo tenure" data-tip="23.6% voluntary, annualized · 31 leavers · avg headcount 131 · 2.4× company rate"/>
+            <!-- direct value labels; accent bar also annotated in words -->
+            <text x="315" y="20"  font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">9.8%</text>
+            <text x="291" y="58"  font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">8.1%</text>
+            <text x="335" y="96"  font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">11.2%</text>
+            <text x="352" y="134" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">12.4%</text>
+            <text x="508" y="172" font-family="var(--sans)" font-size="12.5" fill="var(--ink)" font-weight="700" data-anim="rise">23.6%<tspan fill="var(--steel)" font-weight="400"> — 2.4× company</tspan></text>
+            <!-- zero baseline -->
+            <line x1="170" y1="0" x2="170" y2="182" stroke="var(--mist)" stroke-width="1"/>
+          </svg>
+          <figcaption><strong>Voluntary attrition by cohort, annualized, trailing 12 months.</strong> The flagged cohort clears the reporting bar (n=31 leavers, avg HC 131).</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- CHART PATTERN B: trend line — copy this SVG.
+         Transparent hover circles carry data-tip so every month is inspectable;
+         they paint nothing, so the static chart is untouched. -->
+    <div class="component">
+      <div class="component-name">Chart B — trend line · time or tenure series · hover any month</div>
+      <div class="component-stage">
+        <figure class="exhibit">
+          <svg class="chart-anim" viewBox="0 0 640 212" role="img"
+               aria-label="Line chart of the cohort's voluntary exits per month from July 2025 to June 2026, ranging from 2 to a peak of 5 exits in January 2026. 31 exits total.">
+            <!-- gridlines -->
+            <line x1="50" y1="30"  x2="620" y2="30"  stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="2 4"/>
+            <line x1="50" y1="105" x2="620" y2="105" stroke="var(--chart-grid)" stroke-width="1" stroke-dasharray="2 4"/>
+            <line x1="50" y1="180" x2="620" y2="180" stroke="var(--mist)" stroke-width="1"/>
+            <text x="42" y="184" text-anchor="end" font-family="var(--sans)" font-size="11" fill="var(--steel)">0</text>
+            <text x="42" y="34"  text-anchor="end" font-family="var(--sans)" font-size="11" fill="var(--steel)">5</text>
+            <!-- the series: neutral line, accent only on the point of interest -->
+            <polyline points="50,120 102,90 154,120 205,90 257,120 309,90 361,30 413,90 465,120 516,120 568,120 620,120"
+                      fill="none" stroke="var(--chart-line)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="361" cy="30" r="4.5" fill="var(--chart-accent)" stroke="var(--paper)" stroke-width="1.5" data-anim="rise"/>
+            <text x="361" y="16" text-anchor="middle" font-family="var(--sans)" font-size="12" font-weight="700" fill="var(--ink)" data-anim="rise">Jan · 5 exits</text>
+            <!-- invisible hover targets: one per data point, tooltip only -->
+            <circle cx="50"  cy="120" r="11" fill="transparent" data-tip-title="Jul ’25" data-tip="2 voluntary exits"/>
+            <circle cx="102" cy="90"  r="11" fill="transparent" data-tip-title="Aug ’25" data-tip="3 voluntary exits"/>
+            <circle cx="154" cy="120" r="11" fill="transparent" data-tip-title="Sep ’25" data-tip="2 voluntary exits"/>
+            <circle cx="205" cy="90"  r="11" fill="transparent" data-tip-title="Oct ’25" data-tip="3 voluntary exits"/>
+            <circle cx="257" cy="120" r="11" fill="transparent" data-tip-title="Nov ’25" data-tip="2 voluntary exits"/>
+            <circle cx="309" cy="90"  r="11" fill="transparent" data-tip-title="Dec ’25" data-tip="3 voluntary exits"/>
+            <circle cx="361" cy="30"  r="11" fill="transparent" data-tip-title="Jan ’26" data-tip="5 voluntary exits — the peak"/>
+            <circle cx="413" cy="90"  r="11" fill="transparent" data-tip-title="Feb ’26" data-tip="3 voluntary exits"/>
+            <circle cx="465" cy="120" r="11" fill="transparent" data-tip-title="Mar ’26" data-tip="2 voluntary exits"/>
+            <circle cx="516" cy="120" r="11" fill="transparent" data-tip-title="Apr ’26" data-tip="2 voluntary exits"/>
+            <circle cx="568" cy="120" r="11" fill="transparent" data-tip-title="May ’26" data-tip="2 voluntary exits"/>
+            <circle cx="620" cy="120" r="11" fill="transparent" data-tip-title="Jun ’26" data-tip="2 voluntary exits"/>
+            <!-- sparse x labels -->
+            <text x="50"  y="200" font-family="var(--sans)" font-size="11" fill="var(--steel)">Jul ’25</text>
+            <text x="205" y="200" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--steel)">Oct</text>
+            <text x="361" y="200" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--steel)">Jan ’26</text>
+            <text x="516" y="200" text-anchor="middle" font-family="var(--sans)" font-size="11" fill="var(--steel)">Apr</text>
+            <text x="620" y="200" text-anchor="end" font-family="var(--sans)" font-size="11" fill="var(--steel)">Jun</text>
+          </svg>
+          <figcaption><strong>Cohort voluntary exits per month, Jul 2025 – Jun 2026.</strong> January peak of 5; steady drain, not a one-off event (n=31).</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- CHART PATTERN C: big-number stat block — HTML on purpose: type stays selectable and prints crisper than SVG text -->
+    <div class="component">
+      <div class="component-name">Chart C — stat block · the one big number (intentionally HTML, not SVG)</div>
+      <div class="component-stage">
+        <div class="stat-block">
+          <div class="stat-figure">19<span class="stat-unit"> of 31</span></div>
+          <div class="stat-label">Cohort voluntary leavers rated top performers (4–5)</div>
+          <div class="stat-n">Regrettable attrition — trained reps at peak productivity · n=31</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE PATTERN -->
+    <div class="component">
+      <div class="component-name">Data table — when precision beats a picture</div>
+      <div class="component-stage">
+        <figure class="exhibit" style="margin:0">
+          <table class="data-table">
+            <caption>Voluntary attrition by cohort · annualized, trailing 12 months</caption>
+            <thead>
+              <tr><th scope="col">Cohort</th><th scope="col">Voluntary attrition</th><th scope="col">Leavers (n)</th><th scope="col">Avg headcount</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Company average</td><td>9.8%</td><td>89</td><td class="muted">912</td></tr>
+              <tr><td>Engineering</td><td>8.1%</td><td>17</td><td class="muted">238</td></tr>
+              <tr><td>Customer Success</td><td>11.2%</td><td>14</td><td class="muted">141</td></tr>
+              <tr><td>Sales (all)</td><td>12.4%</td><td>34</td><td class="muted">309</td></tr>
+              <tr><td><strong>Sales · IC · 12–24 mo</strong></td><td><strong>23.6%</strong></td><td><strong>31</strong></td><td class="muted">131</td></tr>
+            </tbody>
+          </table>
+          <figcaption>The flagged cohort clears the reporting bar (n=31, avg HC 131); smaller slices are withheld (n=89 voluntary leavers total).</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ REPORT COMPONENTS ═══════════════ -->
+  <section class="guide-section guide-only" id="report-components">
+    <h2 class="guide-h2">Report components</h2>
+    <hr class="rule">
+    <p class="guide-note">
+      The blocks a report is assembled from, in reading order: lede → findings (stat, chart,
+      or table + caution where warranted) → next moves → methodology → footer.
+    </p>
+
+    <div class="component">
+      <div class="component-name">.exec-answer — the lede. The CHRO reads this and nothing else on a bad day.</div>
+      <div class="component-stage">
+        <div class="exec-answer" style="margin-bottom:0">
+          <div class="kicker">Executive answer</div>
+          <p class="lede">Company-wide attrition is healthy — the story is one cohort. Mid-tenure sales ICs leave at 2.4× the company rate, and they leave because they're paid below band.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="component">
+      <div class="component-name">.stat-block + .callout-caution — a big number that needs a chaperone</div>
+      <div class="component-stage">
+        <div class="stat-block" style="margin-top:0">
+          <div class="stat-figure">23.6<span class="stat-unit">%</span></div>
+          <div class="stat-label">Voluntary attrition, Sales IC · 12–24 mo tenure, annualized</div>
+          <div class="stat-n">31 voluntary leavers ÷ avg cohort headcount 131 · n=31</div>
+        </div>
+        <aside class="callout-caution" style="margin-bottom:0">
+          <div class="callout-kicker">⚠ Caution</div>
+          <p>The cohort (n=31) clears the reporting bar; the manager-level cuts beneath it do not. Keep this at cohort level — smaller slices would identify individuals.</p>
+        </aside>
+      </div>
+    </div>
+
+    <div class="component">
+      <div class="component-name">.finding — kicker, serif title, body, exhibit. Never splits across a page.</div>
+      <div class="component-stage">
+        <section class="finding" style="margin-bottom:0; border-top:none; padding-top:0">
+          <div class="kicker">Finding 2 · Why</div>
+          <h3 class="finding-title">The leavers were underpaid</h3>
+          <p style="margin-bottom:0">74% of the cohort's voluntary leavers sat below band midpoint at exit, against 31% of stayers — a compensation-and-progression gap, not a culture problem.</p>
+        </section>
+      </div>
+    </div>
+
+    <div class="component">
+      <div class="component-name">.appendix — methodology. Quieter and denser; starts on its own printed page.</div>
+      <div class="component-stage">
+        <div class="appendix" style="margin-top:0">
+          <div class="kicker">Appendix · Methodology &amp; caveats</div>
+          <h3>Definitions</h3>
+          <dl>
+            <dt>Annualized attrition</dt>
+            <dd>Leavers in the window ÷ average headcount over the same window.</dd>
+          </dl>
+          <h3>Caveats</h3>
+          <ul style="margin-bottom:0"><li>All department cuts are small-sample; treat as directional.</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="component">
+      <div class="component-name">.report-footer — provenance badge on every report</div>
+      <div class="component-stage">
+        <footer class="report-footer" style="margin-top:0">
+          <span class="pn-mark">◆</span>
+          <span>Prepared with Peoplenometry</span><span class="sep">·</span>
+          <span>peoplenometry.com</span><span class="sep">·</span>
+          <span>practice data by peoplesets</span>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SAMPLE REPORT ═══════════════ -->
+  <section class="guide-section" id="sample-report">
+    <div class="guide-only">
+      <h2 class="guide-h2">Sample report — the system, assembled</h2>
+      <hr class="rule">
+      <p class="guide-note">
+        A complete report, exactly as <code>/brief-my-chro</code> would emit it: a healthy
+        top-line number hiding one sharp, expensive, fixable concentration. Hover the bars
+        for the detail behind each mark — then print this page and you get only what's below,
+        on Letter, with the appendix on its own page, no interactivity required.
+      </p>
+    </div>
+
+    <article class="report-sheet">
+      <div class="report">
+
+        <header>
+          <div class="masthead">
+            <div class="masthead-company"><span class="company-mark"></span><span class="company-name"></span></div>
+            <div class="masthead-kind">People analytics brief</div>
+          </div>
+          <h1 class="report-title">Why are people leaving?</h1>
+          <p class="report-subtitle">
+            Trailing 12 months (Jul 2025 – Jul 2026)<span class="sep"> · </span>Regular employees<span class="sep"> · </span>Prepared 5 Jul 2026<span class="sep"> · </span>For: CHRO
+          </p>
+        </header>
+
+        <div class="exec-answer">
+          <div class="kicker">Executive answer</div>
+          <p class="lede">
+            Company-wide attrition is healthy at <strong>13.2%</strong> — but that hides the story.
+            Voluntary attrition among <strong>mid-tenure sales reps runs 23.6%</strong>, nearly
+            <strong>2.4× the company rate</strong>, concentrated among reps paid below band: 74% of
+            those leavers sat under band midpoint, and 19 of the 31 were rated top performers. Not a
+            culture problem — a compensation-and-progression gap in one function, costing you
+            trained revenue.
+          </p>
+        </div>
+
+        <section class="finding">
+          <div class="kicker">Finding 1 · The concentration</div>
+          <h3 class="finding-title">One cohort — sales ICs at 12–24 months — leaves at 2.4× the company rate</h3>
+          <p>
+            Voluntary attrition across the company is 9.8%, and every department sits within a
+            normal band. The outlier is not a department at all: it's a cohort. Sales individual
+            contributors in their second year leave at 23.6% — a cliff that department-level
+            reporting averages away.
+          </p>
+          <figure class="exhibit">
+            <svg class="chart-anim" viewBox="0 0 640 200" role="img"
+                 aria-label="Horizontal bar chart of annualized voluntary attrition by cohort. Company average 9.8 percent. Engineering 8.1 percent. Customer Success 11.2 percent. Sales overall 12.4 percent. The accented cohort, Sales individual contributors at 12 to 24 months tenure, runs 23.6 percent — 2.4 times the company average.">
+              <text x="162" y="20"  text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Company avg</text>
+              <text x="162" y="58"  text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Engineering</text>
+              <text x="162" y="96"  text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Customer Success</text>
+              <text x="162" y="134" text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Sales (all)</text>
+              <text x="162" y="172" text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--ink)" font-weight="600">Sales · IC · 12–24 mo</text>
+              <rect x="170" y="4"   width="137" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Company average" data-tip="9.8% voluntary, annualized · 89 leavers · avg headcount 912"/>
+              <rect x="170" y="42"  width="113" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Engineering" data-tip="8.1% voluntary, annualized · 17 leavers · avg headcount 238"/>
+              <rect x="170" y="80"  width="157" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Customer Success" data-tip="11.2% voluntary, annualized · 14 leavers · avg headcount 141"/>
+              <rect x="170" y="118" width="174" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Sales (all)" data-tip="12.4% voluntary, annualized · 34 leavers · avg headcount 309"/>
+              <rect x="170" y="156" width="330" height="22" rx="2" fill="var(--chart-accent)"  data-anim="grow" data-tip-title="Sales · IC · 12–24 mo tenure" data-tip="23.6% voluntary, annualized · 31 leavers · avg headcount 131 · 2.4× company rate"/>
+              <text x="315" y="20"  font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">9.8%</text>
+              <text x="291" y="58"  font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">8.1%</text>
+              <text x="335" y="96"  font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">11.2%</text>
+              <text x="352" y="134" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">12.4%</text>
+              <text x="508" y="172" font-family="var(--sans)" font-size="12.5" fill="var(--ink)" font-weight="700" data-anim="rise">23.6%<tspan fill="var(--steel)" font-weight="400"> — 2.4× company</tspan></text>
+              <line x1="170" y1="0" x2="170" y2="182" stroke="var(--mist)" stroke-width="1"/>
+            </svg>
+            <figcaption><strong>Voluntary attrition by cohort, annualized, trailing 12 months.</strong> The flagged cohort clears the reporting bar (n=31 leavers, avg HC 131).</figcaption>
+          </figure>
+        </section>
+
+        <section class="finding">
+          <div class="kicker">Finding 2 · Why</div>
+          <h3 class="finding-title">The leavers were underpaid: 74% sat below band midpoint</h3>
+          <p>
+            Within the cohort, pay separates who left from who stayed. 74% of voluntary leavers
+            were paid below their salary band's midpoint (compa-ratio &lt; 0.95), against 31% of
+            stayers. The medians tell the same story: leavers sat at a compa-ratio of
+            <strong>0.88</strong>; stayers at <strong>1.02</strong>. These reps could see their own
+            pipeline — and their own paycheck — and the market resolved the gap for you.
+          </p>
+          <figure class="exhibit">
+            <svg class="chart-anim" viewBox="0 0 640 88" role="img"
+                 aria-label="Horizontal bar chart comparing the share of the cohort paid below salary-band midpoint, meaning a compa-ratio under 0.95. Leavers: 74 percent, accented. Stayers: 31 percent.">
+              <text x="92" y="20" text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--ink)" font-weight="600">Leavers</text>
+              <text x="92" y="58" text-anchor="end" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)">Stayers</text>
+              <rect x="100" y="4"  width="340" height="22" rx="2" fill="var(--chart-accent)"  data-anim="grow" data-tip-title="Leavers (n=31)" data-tip="74% paid below band midpoint · median compa-ratio 0.88"/>
+              <rect x="100" y="42" width="143" height="22" rx="2" fill="var(--chart-neutral)" data-anim="grow" data-tip-title="Stayers (n=100)" data-tip="31% paid below band midpoint · median compa-ratio 1.02"/>
+              <text x="448" y="20" font-family="var(--sans)" font-size="12.5" fill="var(--ink)" font-weight="700" data-anim="rise">74%<tspan fill="var(--steel)" font-weight="400"> — median compa 0.88</tspan></text>
+              <text x="251" y="58" font-family="var(--sans)" font-size="12.5" fill="var(--graphite)" data-anim="rise">31%</text>
+              <line x1="100" y1="0" x2="100" y2="68" stroke="var(--mist)" stroke-width="1"/>
+            </svg>
+            <figcaption><strong>Share paid below salary-band midpoint (compa &lt; 0.95), cohort only.</strong> Leavers n=31, stayers n=100.</figcaption>
+          </figure>
+        </section>
+
+        <section class="finding">
+          <div class="kicker">Finding 3 · What it's costing you</div>
+          <h3 class="finding-title">You are losing your best reps, not your weakest</h3>
+          <div class="stat-block">
+            <div class="stat-figure">19<span class="stat-unit"> of 31</span></div>
+            <div class="stat-label">Cohort voluntary leavers rated top performers (4–5)</div>
+            <div class="stat-n">Regrettable attrition — trained reps at peak productivity · n=31</div>
+          </div>
+          <p>
+            This is not performance-managed churn. Nearly two-thirds of the cohort's leavers
+            carried a 4 or 5 rating — ramped reps walking out at exactly the point their quota
+            capacity peaks, taking the training investment and the pipeline with them.
+          </p>
+        </section>
+
+        <section class="finding">
+          <div class="kicker">Recommended next moves</div>
+          <ol class="next-moves">
+            <li>
+              <strong>Market-adjust the below-band mid-tenure sales ICs now.</strong> Targeted, not
+              a company-wide program — model the adjustment against the fully-loaded cost of
+              replacing a ramped rep (6–9 months of lost quota).
+            </li>
+            <li>
+              <strong>Add an 18-month comp-and-progression checkpoint to the sales IC track.</strong>
+              The cliff sits at 12–24 months — before anything currently intervenes.
+            </li>
+          </ol>
+        </section>
+
+        <section class="appendix">
+          <div class="kicker">Appendix · Methodology &amp; caveats</div>
+
+          <h3>Definitions</h3>
+          <dl>
+            <dt>Voluntary attrition</dt>
+            <dd>Voluntary leavers ÷ average headcount over the same window, annualized.</dd>
+            <dt>Cohort</dt>
+            <dd>Sales function, individual-contributor levels, 12–24 months tenure at exit (or as of the window end, for stayers).</dd>
+            <dt>Compa-ratio / below band</dt>
+            <dd>Salary ÷ salary-band midpoint. Below band = compa-ratio &lt; 0.95.</dd>
+            <dt>Source</dt>
+            <dd>Peoplenometry metrics library v1.0.</dd>
+            <dt>Population</dt>
+            <dd>Regular employees only. Contractors, interns, and temporary workers are excluded.</dd>
+          </dl>
+
+          <h3>The numbers</h3>
+          <ul>
+            <li>Window: 1 Jul 2025 – 1 Jul 2026 (trailing 12 months). Company average headcount: 912.</li>
+            <li>Leavers in window: 120 total, 89 voluntary → 13.2% total / 9.8% voluntary attrition.</li>
+            <li>Cohort (Sales · IC · 12–24 mo): average headcount 131, 31 voluntary leavers → 23.6% annualized.</li>
+            <li>Compensation: leavers median compa-ratio 0.88 vs. stayers 1.02; 74% of leavers below band midpoint.</li>
+            <li>Performance: 19 of the 31 cohort leavers rated 4–5 in their most recent cycle.</li>
+          </ul>
+
+          <h3>Caveats</h3>
+          <ul>
+            <li>The pay–attrition relationship is an association, not proof of cause; exit-interview data would confirm it.</li>
+            <li>Single 12-month window — no prior-year baseline, so the trend direction is unknown.</li>
+            <li>Manager-level detail is withheld to avoid identifying individuals.</li>
+          </ul>
+
+          <h3>To strengthen this analysis</h3>
+          <ul>
+            <li>Code exit-interview reasons for the cohort's leavers and reconcile against the pay finding.</li>
+            <li>Add a prior-year comparison to establish whether the cliff is new or chronic.</li>
+            <li>Benchmark the sales IC bands against current market comp — 0.88 vs. midpoint may understate the gap vs. market.</li>
+          </ul>
+        </section>
+
+        <footer class="report-footer">
+          <span class="pn-mark">◆</span>
+          <span>Prepared with Peoplenometry</span><span class="sep">·</span>
+          <span>peoplenometry.com</span><span class="sep">·</span>
+          <span>practice data by peoplesets</span>
+        </footer>
+
+      </div>
+    </article>
+
+    <p class="print-hint guide-only">⌘P prints only the report above — Letter, 0.75in margins, appendix on its own page.</p>
+  </section>
+
+</div>
+
+<!-- ██████████████████████████████████████████████████████████████████████████
+     ██  REPORT JS — part of the report, NOT guide chrome.                   ██
+     ██  The /brief-my-chro skill inlines this <script> at the end of every  ██
+     ██  report it generates, right before </body>.                          ██
+     ██                                                                      ██
+     ██  Progressive enhancement ONLY. Every chart is already complete       ██
+     ██  static SVG in the markup — this adds (a) hover tooltips on any      ██
+     ██  [data-tip] element and (b) a one-time entrance animation on         ██
+     ██  children of .chart-anim marked data-anim="grow|rise". If it never   ██
+     ██  runs (JS off, print, locked-down mail client), nothing is missing.  ██
+     ██  Vanilla JS, zero dependencies, zero external requests.              ██
+     ██████████████████████████████████████████████████████████████████████████ -->
+<script>
+(function () {
+  "use strict";
+  try {
+    /* ── Tooltips: [data-tip] (detail) + optional [data-tip-title] ── */
+    var tip = document.createElement("div");
+    tip.className = "chart-tip";
+    tip.setAttribute("aria-hidden", "true");
+    document.body.appendChild(tip);
+    var PAD = 12;
+    function moveTip (e) {
+      var w = tip.offsetWidth, h = tip.offsetHeight;
+      var x = e.clientX + PAD, y = e.clientY - h - PAD;
+      if (x + w > window.innerWidth - 8) x = e.clientX - w - PAD;
+      if (y < 8) y = e.clientY + PAD;
+      tip.style.left = x + "px";
+      tip.style.top  = y + "px";
+    }
+    Array.prototype.forEach.call(document.querySelectorAll("[data-tip]"), function (el) {
+      el.addEventListener("mouseenter", function (e) {
+        tip.textContent = "";
+        var title = el.getAttribute("data-tip-title");
+        if (title) {
+          var t = document.createElement("span");
+          t.className = "tip-title";
+          t.textContent = title;
+          tip.appendChild(t);
+        }
+        var d = document.createElement("span");
+        d.className = "tip-detail";
+        d.textContent = el.getAttribute("data-tip");
+        tip.appendChild(d);
+        tip.classList.add("is-visible");
+        moveTip(e);
+      });
+      el.addEventListener("mousemove", moveTip);
+      el.addEventListener("mouseleave", function () {
+        tip.classList.remove("is-visible");
+      });
+    });
+
+    /* ── Entrance animation: bars grow from zero, labels/points fade + rise.
+          Web Animations API with fill:"backwards" — the markup's final state
+          is never altered, so print and no-JS are always correct. ── */
+    if (!Element.prototype.animate) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    Array.prototype.forEach.call(document.querySelectorAll(".chart-anim"), function (chart) {
+      var grows = 0, rises = 0;
+      Array.prototype.forEach.call(chart.querySelectorAll("[data-anim]"), function (el) {
+        if (el.getAttribute("data-anim") === "grow") {
+          el.animate(
+            [{ width: "0px" }, { width: el.getAttribute("width") + "px" }],
+            { duration: 600, delay: 70 * grows++, easing: "cubic-bezier(.25,.7,.3,1)", fill: "backwards" }
+          );
+        } else {
+          el.animate(
+            [{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "translateY(0)" }],
+            { duration: 420, delay: 300 + 70 * rises++, easing: "ease-out", fill: "backwards" }
+          );
+        }
+      });
+    });
+  } catch (err) {
+    /* Enhancement only — the charts are already complete without it. */
+  }
+})();
+</script>
+</body>
+</html>
