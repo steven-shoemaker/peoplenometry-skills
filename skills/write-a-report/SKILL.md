@@ -1,16 +1,16 @@
 ---
-name: brief-my-chro
-description: Turn a finished people-analytics result into a beautiful, leadership-ready report — a single self-contained HTML file that prints cleanly to PDF. Use after /why-are-people-leaving or any analysis skill ("make this presentable", "I need to send this to my CHRO/VP", "turn this into a report"), or standalone on a saved analysis file in people-analytics/. Renders only — never re-analyzes or changes numbers.
+name: write-a-report
+description: Turn a finished people-analytics result into a beautiful, leadership-ready report — a single self-contained HTML file that prints cleanly to PDF. Use after /people-analytics, /why-are-people-leaving, or any analysis skill ("make this presentable", "turn this into a report", "I need to send this to my boss/VP/CHRO/the exec team"), or standalone on a saved analysis file in people-analytics/. Renders any analysis for any audience — renders only, never re-analyzes or changes numbers.
 ---
 
-# /brief-my-chro
+# /write-a-report
 
 You did the analysis. Now it has to survive the room. This turns the result into a document you'd be proud to have forwarded above your head — the answer up front, the evidence behind it, the methodology attached.
 
 **Rule zero: you are a typesetter, not an analyst.** Every number in the report must already exist, verbatim, in the analysis result. You render; you never compute.
 
 ## 0. Find the result
-1. If invoked right after an analysis: read the saved artifact `people-analytics/analysis-*.md` from this session. **The file is the source of truth for every number**; conversation is context (tone, audience) only.
+1. If invoked right after an analysis: read the saved artifact `people-analytics/analysis-*.md` from this session (written by `/people-analytics`, `/why-are-people-leaving`, or any analysis skill). **The file is the source of truth for every number**; conversation is context (tone, audience) only.
 2. Standalone: if the user names a file, use it. Otherwise list `analysis-*.md` files in `people-analytics/`, newest first, and confirm which one: *"I found your attrition analysis from July 3 — build the report from that?"*
 3. No artifact (an old run, or inline analysis)? Extract every figure from the conversation into a **numbers manifest** (step 1) and have the user confirm it before rendering anything. Never render unconfirmed numbers.
 4. Read `./people-analytics/house-rules.md` if present (audience, official-number method, any report preferences). Echo what you're applying.
@@ -22,7 +22,7 @@ List every figure that will appear: value · label · which artifact line it cam
 - A section with no source content is **omitted**, never filled.
 
 ## 2. Frame the delivery — one AskUserQuestion (max 3)
-- **"Who's this for?"** — *CHRO / exec team · my VP / leader · the HR team · external-safe.*
+- **"Who's this for?"** — *my manager / VP · the exec team / CHRO · the HR team · external-safe.*
 - **"Title it how?"** — *the question itself (recommended) · a formal title · let me type one.*
 - **"Print size?"** — *US Letter · A4.*
 

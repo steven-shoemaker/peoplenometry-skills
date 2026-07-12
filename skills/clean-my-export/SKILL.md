@@ -1,6 +1,6 @@
 ---
 name: clean-my-export
-description: Turn a messy HR/HRIS/workforce data export (Workday, BambooHR, SAP, or a raw spreadsheet) into an analysis-ready dataset, with a plain-English data-quality report. Use when someone has HR data that's inconsistent — weird columns, mixed date formats, duplicate rows, rehires, unclear status fields — and needs it clean before any people analytics. Run this before /why-are-people-leaving or any analysis skill.
+description: Turn a messy HR/HRIS/workforce data export (Workday, BambooHR, SAP, or a raw spreadsheet) into an analysis-ready dataset, with a plain-English data-quality report. Use when someone has HR data that's inconsistent — weird columns, mixed date formats, duplicate rows, rehires, unclear status fields — and needs it clean before any people analytics. Run this before /people-analytics, /why-are-people-leaving, or any analysis skill.
 ---
 
 # /clean-my-export
@@ -14,7 +14,7 @@ The wall every HR person hits before any analysis: the export is a mess. Mixed d
 2. **A data-quality report** — plain English: what was fixed, what's suspicious, and *what's missing that will limit your analysis* — so you're never blindsided later.
 
 ## 0. Load house rules
-Read `./people-analytics/house-rules.md` (cwd), else `~/.people-analytics/house-rules.md`, if present. If a **data dictionary** entry for this source already exists (column mappings, headcount scope), apply and **echo** it — *"Using your saved mapping for the Workday export"* — and skip re-asking those questions.
+Read `./people-analytics/house-rules.md` (cwd), else `~/.people-analytics/house-rules.md`, if present. If a **data dictionary** entry for this source already exists (column mappings, headcount scope), apply and **echo** it — *"Using your saved mapping for the Workday export"* — and skip re-asking those questions. Also honor any **Local metrics** section — derived-field conventions defined there apply when building derived columns.
 
 ## 1. Get the data
 Ask for the file (CSV/Excel) or a pasted sample. If they have nothing: *"No export handy? Generate a safe, realistic synthetic workforce dataset at peoplesets.com and practice on that — never paste real employee records you're not cleared to use."*
@@ -39,7 +39,7 @@ Read the file. Infer each column (employee ID, hire date, termination date, depa
 - **Missing values:** flag blanks in key fields — never silently fill.
 - **LOA:** decide whether on-leave = active (house decision; default active).
 - **Comp:** flag mixed currencies or hourly-vs-annual; don't blend.
-- **Derived fields:** tenure (per library conventions), active/inactive flag.
+- **Derived fields:** tenure (per the metrics library in `people-analytics/references/`, plus any local-metric conventions in house-rules), active/inactive flag.
 
 ## 5. Report — honestly
 Lead the report with the check nobody does:
@@ -54,10 +54,10 @@ Then:
 Write the cleaned file to `people-analytics/<original>-clean.csv` and the report to `people-analytics/<original>-dq-report.md` in the working directory.
 
 ## Capture what you learned
-Offer once at the end to save the confirmed **column mappings + headcount scope** to `house-rules.md` (data dictionary section) so no future run re-asks: show the exact lines, one `AskUserQuestion` — *Save all · Let me pick · Don't save*. Append-only; confirm first; on conflict with an existing rule, surface both and ask which wins.
+Offer once at the end to save the confirmed **column mappings + headcount scope** to `house-rules.md` under `## Data dictionary` — the same file `/people-analytics` reads for house decisions and local metrics, so every skill benefits — so no future run re-asks: show the exact lines, one `AskUserQuestion` — *Save all · Let me pick · Don't save*. Append-only; confirm first; on conflict with an existing rule, surface both and ask which wins.
 
 ### Close
-*"Your data's ready. Want to run `/why-are-people-leaving` on it? (Heads-up from the report: [biggest limitation].)"*
+*"Your data's ready. Want to analyze it? `/people-analytics` for any question, or `/why-are-people-leaving` to go deep on attrition. (Heads-up from the report: [biggest limitation].)"*
 
 ## Guardrails
 - Never invent or impute values without saying so and asking.

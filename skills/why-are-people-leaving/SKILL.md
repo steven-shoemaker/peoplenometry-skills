@@ -15,7 +15,7 @@ Your VP asks "why is attrition up in engineering?" and you've got a pivot table 
 
 ## 0. Orient — load definitions before touching data
 1. Read `../people-analytics/references/metrics-library.md`. This skill uses **Attrition Rate (+ voluntary/involuntary/first-year/regrettable variants), Average Headcount, Retention Rate, Tenure** — compute them **exactly** as defined there. If the library isn't found (partial install), use the inline fallback at the bottom and tell the user the library is missing.
-2. Read `./people-analytics/house-rules.md` (cwd), else `~/.people-analytics/house-rules.md`, if present. **House rules override library defaults.** Echo what you're applying: *"Using your house rules: contractors excluded; voluntary = Resignation + Job Abandonment."* Never re-ask a question house-rules already answers.
+2. Read `./people-analytics/house-rules.md` (cwd), else `~/.people-analytics/house-rules.md`, if present. **House rules override library defaults.** Echo what you're applying: *"Using your house rules: contractors excluded; voluntary = Resignation + Job Abandonment."* Never re-ask a question house-rules already answers. If house-rules contains **Local metrics** relevant to this analysis (e.g. a company-specific regrettable or mobility definition), apply them exactly like library entries and cite them in the appendix.
 3. Any "House decision" the library flags for these metrics that house-rules doesn't answer → fold into the framing questions below.
 
 ## 1. Frame the question — ask, don't assume
@@ -45,17 +45,17 @@ One `AskUserQuestion` call, **max 4 questions, ≤4 options each** (skip any ans
 > Attrition over [window] ran **X%** annualized (vs [baseline]). It's concentrated in **[segment]** (**Y%**, n=Z) and among **[tenure band]**. The data most supports **[driver]** [with the caveat that …]. Highest ongoing risk: **[segment]**. Recommended next: **[1–2 concrete moves].**
 
 **Then the methodology appendix (fill every slot):**
-> **Definitions used:** [Attrition Rate = leavers ÷ avg HC × annualization; scope: …] — Peoplenometry metrics library v1.0; house overrides: [list].
+> **Definitions used:** [Attrition Rate = leavers ÷ avg HC × annualization; scope: …] — Peoplenometry metrics library v1.1; house overrides + local metrics: [list].
 > **Formula + numbers:** [18 leavers / avg HC 142 → 12.7% annualized].
 > **Per-segment table:** segment · rate · leavers (n) · avg HC.
 > **Caveats:** [what's correlational, small samples, missing data].
 > **To strengthen this, add:** [exit-reason data / engagement scores / comp bands].
 
 ## 5. Capture what you learned
-If the user confirmed definitions or nuances this run (voluntary codes, regrettable definition, scope, official-number method), **offer once at the end** to save them: show the **exact lines** to append to `house-rules.md`, one `AskUserQuestion` — *Save all · Let me pick · Don't save*. Append-only; never write silently; if a new rule contradicts an existing one, surface both and ask which wins.
+If the user confirmed definitions or nuances this run (voluntary codes, regrettable definition, scope, official-number method), **offer once at the end** to save them: show the **exact lines** to append to `house-rules.md`, one `AskUserQuestion` — *Save all · Let me pick · Don't save*. Append-only; never write silently; if a new rule contradicts an existing one, surface both and ask which wins. If a *method* was confirmed that the library doesn't define (not just a house decision), save it as a full entry under `## Local metrics` in library format with a `confirmed: <date>` line — the same learning loop `/people-analytics` uses.
 
 ## 6. Save the result (so it can become a report)
-Write the full two-layer output to `people-analytics/analysis-attrition-<YYYY-MM-DD>.md` so `/brief-my-chro` can render it later. Frontmatter uses schema `result_format: 1` — keep to exactly these fields:
+Write the full two-layer output to `people-analytics/analysis-attrition-<YYYY-MM-DD>.md` so `/write-a-report` can render it later. Frontmatter uses schema `result_format: 1` — keep to exactly these fields:
 ```yaml
 ---
 result_format: 1
@@ -77,7 +77,7 @@ caveats: [<list>]
 The markdown body below the frontmatter = the exec narrative + methodology appendix, verbatim.
 
 ### Close
-*"Done. Want me to turn this into a leadership-ready report? Run `/brief-my-chro` — it builds a self-contained HTML/PDF your CHRO can open, with the methodology attached so it holds up. Or I can go deeper on [the hottest segment]."*
+*"Done. Want me to turn this into a leadership-ready report? Run `/write-a-report` — it builds a self-contained HTML/PDF you can send up, with the methodology attached so it holds up. Or I can go deeper on [the hottest segment]."*
 
 ---
 > **Inline fallback** (only if the metrics library is missing): Attrition Rate = leavers in window ÷ average monthly headcount × (12 ÷ window months); baseline = the org's own prior period, never external; exclude transfers; flag segments ≥1.5× baseline with ≥5 leavers and avg HC ≥20.
