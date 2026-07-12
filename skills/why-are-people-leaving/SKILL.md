@@ -45,7 +45,7 @@ One `AskUserQuestion` call, **max 4 questions, ≤4 options each** (skip any ans
 > Attrition over [window] ran **X%** annualized (vs [baseline]). It's concentrated in **[segment]** (**Y%**, n=Z) and among **[tenure band]**. The data most supports **[driver]** [with the caveat that …]. Highest ongoing risk: **[segment]**. Recommended next: **[1–2 concrete moves].**
 
 **Then the methodology appendix (fill every slot):**
-> **Definitions used:** [Attrition Rate = leavers ÷ avg HC × annualization; scope: …] — Peoplenometry metrics library v1.1; house overrides + local metrics: [list].
+> **Definitions used:** [Attrition Rate = leavers ÷ avg HC × annualization; scope: …] — Peoplenometry metrics library v2.0; house overrides + local metrics: [list].
 > **Formula + numbers:** [18 leavers / avg HC 142 → 12.7% annualized].
 > **Per-segment table:** segment · rate · leavers (n) · avg HC.
 > **Caveats:** [what's correlational, small samples, missing data].
