@@ -7,7 +7,7 @@ A pack of installable AI skills for HR and People teams. Built by [Peoplenometry
 ## Install
 
 ```
-npx skills add stevenshoemaker/peoplenometry-skills
+npx skills add steven-shoemaker/peoplenometry-skills
 ```
 
 Then run any skill in Claude Code, Cursor, Codex, or any tool that supports skills.
