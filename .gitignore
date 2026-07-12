@@ -1,5 +1,5 @@
 .DS_Store
-people-analytics/
+/people-analytics/
 *-clean.csv
 
 dist/*.zip
